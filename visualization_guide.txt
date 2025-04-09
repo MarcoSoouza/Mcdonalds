@@ -1,0 +1,29 @@
+# How to Visualize the 'produtos' Table in MySQL
+
+## Using MySQL Command Line
+
+1. **Open MySQL Command Line**: Launch the MySQL command line interface.
+
+2. **Connect to the Database**:
+   ```
+   mysql -u your_username -p
+   ```
+   Replace `your_username` with your actual MySQL username. You will be prompted to enter your password.
+
+3. **Select the Database**:
+   ```
+   USE your_database;
+   ```
+   Replace `your_database` with the name of your database.
+
+4. **Query the Table**:
+   ```
+   SELECT * FROM produtos;
+   ```
+
+5. **Exit MySQL**:
+   ```
+   EXIT;
+   ```
+
+This will allow you to view all the entries in the 'produtos' table.

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Fazer pedido.css">
+    <title>Fazer Pedido</title>
+</head>
+<body>
+<section id="order" style="text-align: center;">
+    <h2>Fazer Pedido</h2>
+    <form id="orderForm">
+        <label for="flavor">Escolha seu sabor:</label>
+        <select id="flavor" name="flavor" required>
+        </select>
+        <label for="quantity">Quantidade:</label>
+        <input type="number" id="quantity" name="quantity" min="1" required>
+        
+        <label for="customerName">Nome do Cliente:</label>
+        <input type="text" id="customerName" name="customerName" required>
+        
+        <button type="submit">Fazer Pedido</button>
+    </form>
+    <div id="loadingMessage" style="display:none;">Aguarde, seu pedido está sendo processado...</div>
+    <div id="orderCard" class="order-section" style="display:none; margin-top: 20px;">
+        <h3>Seu Pedido</h3>
+        <p id="orderDetails"></p>
+        <p id="orderPrice"></p>
+        <img id="iceCreamImage" src="" alt="Sorvete" style="width: 200px; display: none; margin-top: 10px;">
+    </div>
+</section>
+
+<script>
+    // Fetch available flavors from the server
+    fetch('/produtos')
+        .then(response => response.json())
+        .then(flavors => {
+            const flavorSelect = document.getElementById('flavor');
+            flavors.forEach(flavor => {
+                const option = document.createElement('option');
+                option.value = flavor.nome; // Assuming 'nome' is the field for flavor name
+                option.textContent = flavor.nome; // Display the flavor name
+                flavorSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching flavors:', error));
+
+    const prices = {
+        chocolate: 5.00,
+        morango: 5.50,
+        mirtilo: 5.00,
+        pistache: 5.50
+    };
+
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const flavor = document.getElementById('flavor').value;
+        const quantity = document.getElementById('quantity').value;
+        const customerName = document.getElementById('customerName').value;
+
+        // Show loading message
+        document.getElementById('loadingMessage').style.display = 'block';
+
+        // Send order data to the server
+        fetch('/submit_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ flavor, quantity, customerName })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            // Hide loading message
+            document.getElementById('loadingMessage').style.display = 'none';
+            alert(data); // Show success message
+
+            const orderDetails = `Sabor: ${flavor}, Quantidade: ${quantity}`;
+            const orderPrice = `Preço Total: R$ ${(prices[flavor] * quantity).toFixed(2)}`;
+            
+            document.getElementById('orderDetails').innerText = orderDetails;
+            document.getElementById('orderPrice').innerText = orderPrice;
+
+            // Set the image based on the selected flavor
+            const imageMap = {
+                chocolate: 'image/Cópia de Sabor-chocolate-modelo01.png',
+                morango: 'image/Cópia de Sabor-morango-modelo01.png',
+                mirtilo: 'image/Cópia de Sabor-mirtilo-modelo01.jpg',
+                pistache: 'image/Cópia de Sabor-pistache-modelo01.png'
+            };
+            document.getElementById('iceCreamImage').src = imageMap[flavor];
+            document.getElementById('iceCreamImage').style.display = 'block';
+            document.getElementById('orderCard').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            // Hide loading message in case of error
+            document.getElementById('loadingMessage').style.display = 'none';
+        });
+    });
+</script>
+</body>
+</html>

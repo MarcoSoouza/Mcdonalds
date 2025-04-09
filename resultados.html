@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="resultados.css">
+    <title>Resultados</title>
+</head>
+<body>
+    <h1>Resultados do Banco de Dados</h1>
+    <h2>Detalhes do Pedido</h2>
+    <table id="orderDetailsTable" border="1" style="width: 100%; text-align: left;">
+        <thead>
+            <tr>
+                <th>Sabor</th>
+                <th>Quantidade</th>
+                <th>Nome do Cliente</th>
+            </tr>
+        </thead>
+        <tbody id="orderDetails"></tbody>
+    </table>
+    
+    <h2>Produtos</h2>
+    <button id="showProductsButton">Mostrar Lista de Produtos</button>
+    <table id="resultTable" border="1" style="width: 100%; text-align: left; display: none;">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Preço</th>
+                <th>Estoque Atual</th>
+                <th>Estoque Mínimo</th>
+                <th>Validade</th>
+                <th>Disponibilidade</th>
+            </tr>
+        </thead>
+        <tbody id="resultList"></tbody>
+    </table>
+
+    <script>
+        const LOW_STOCK_THRESHOLD = 5; // Define the low stock threshold
+        const HIGH_STOCK_THRESHOLD = 20; // Define the high stock threshold
+        const EXPIRATION_WARNING_DAYS = 5; // Days before expiration to trigger alert
+
+        // Fetch and display all data from the database
+        fetch('/produtos')
+            .then(response => response.json())
+            .then(products => {
+                const resultList = document.getElementById('resultList');
+                const currentDate = new Date();
+                products.forEach(product => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${product.nome}</td>
+                        <td>${product.descricao}</td>
+                        <td>R$ ${product.preco}</td>
+                        <td>${product.estoque_atual}</td>
+                        <td>${product.estoque_minimo}</td>
+                        <td>${new Date(product.validade).toLocaleDateString()}</td>
+                        <td>${product.disponibilidade ? 'Sim' : 'Não'}</td>
+                    `;
+                    resultList.appendChild(row);
+
+                    // Check stock level and notify if below threshold
+                    if (product.estoque_atual < LOW_STOCK_THRESHOLD) {
+                        alert(`Atenção: O produto ${product.nome} está com estoque baixo!`);
+                    }
+
+                    // Check stock level and notify if above threshold
+                    if (product.estoque_atual > HIGH_STOCK_THRESHOLD) {
+                        alert(`Atenção: O produto ${product.nome} está com excesso de estoque!`);
+                    }
+
+                    // Check expiration date and notify if within warning period
+                    const expirationDate = new Date(product.validade);
+                    const timeDiff = expirationDate - currentDate;
+                    const daysToExpiration = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    if (daysToExpiration <= EXPIRATION_WARNING_DAYS && daysToExpiration >= 0) {
+                        alert(`Atenção: O produto ${product.nome} está prestes a vencer em ${daysToExpiration} dias!`);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching products:', error);
+            });
+
+        // Fetch and display all order details
+        fetch('/all_orders')
+            .then(response => response.json())
+            .then(orders => {
+                const orderDetailsDiv = document.getElementById('orderDetails');
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.flavor}</td>
+                        <td>${order.quantity}</td>
+                        <td>${order.customerName}</td>
+                    `;
+                    orderDetailsDiv.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching order details:', error);
+            });
+
+        // Show product list when button is clicked
+        document.getElementById('showProductsButton').addEventListener('click', function() {
+            const resultTable = document.getElementById('resultTable');
+            resultTable.style.display = resultTable.style.display === 'none' ? 'table' : 'none';
+        });
+    </script>
+</body>
+</html>
+</create_file>

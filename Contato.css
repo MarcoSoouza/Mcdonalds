@@ -1,0 +1,74 @@
+h2 {
+    font-size: 30px; /* Updated font size for headings */
+}
+
+#contact {
+    text-align: center;
+    background-image: url('path/to/your/background-image.jpg'); /* Set the background image */
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the background image */
+}
+
+.rating {
+    display: flex; /* Align rating buttons in a row */
+    justify-content: center; /* Center the rating buttons */
+}
+
+label {
+    cursor: pointer; /* Pointer cursor for labels */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+input[type="radio"]:checked + label {
+    background-color: rgba(0, 0, 0, 0.1); /* Light background on selection */
+}
+
+body {
+    background-color: #f0f8ff; /* Set background color to a light shade */
+}
+
+section#contact {
+    text-align: center; /* Center the section content */
+    margin: auto; /* Center the section on the page */
+}
+
+form {
+    background-color: #e0f7fa; /* Light cyan background for the form */
+    text-align: center; /* Center text within the form */
+    padding: 60px; /* Increased padding for a larger form */
+    margin: 20px; /* Added margin for spacing around the form */
+    min-width: 300px; /* Set a minimum width for the form */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Set a maximum width for the form */
+    margin: auto; /* Center the form on the page */
+    font-size: 24px; /* Increased font size for the entire form */
+}
+
+form label {
+    color: #00796b; /* Dark teal text color for labels */
+    font-size: 26px; /* Increased font size for labels */
+}
+
+form input, form textarea {
+    border: 1px solid #00796b; /* Dark teal border for inputs */
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 100%; /* Full width for inputs */
+    font-size: 24px; /* Increased font size for inputs */
+}
+
+form button {
+    background-color: #4CAF50; /* Light green background for the button */
+    color: white; /* White text color for the button */
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 24px; /* Increased font size for button */
+}
+
+form button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}

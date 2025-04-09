@@ -1,0 +1,30 @@
+/* Light Theme Styles */
+body {
+    background-color: #ffffff; /* Light background */
+    color: #000000; /* Dark text color */
+}
+
+a {
+    color: #007bff; /* Blue for links */
+}
+
+button {
+    background-color: #4CAF50; /* Green for buttons */
+    color: #ffffff; /* White text color for buttons */
+}
+
+input, textarea {
+    background-color: #f8f9fa; /* Light input fields */
+    color: #000000; /* Dark text color for input fields */
+    border: 1px solid #007bff; /* Blue border */
+}
+
+#orderCard {
+    background-color: #f0f0f0; /* Light background for the order card */
+    padding: 20px; /* Add some padding for better spacing */
+    border-radius: 5px; /* Rounded corners for aesthetics */
+}
+
+#orderCard h3, #orderCard p {
+    color: #000000; /* Set text color to black for order details */
+}

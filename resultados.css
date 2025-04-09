@@ -1,0 +1,47 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50; /* Green background for header */
+    color: white; /* White text for header */
+}
+
+tr:nth-child(even) {
+    background-color: #e0f7fa; /* Light cyan background for even rows */
+}
+
+tr:nth-child(odd) {
+    background-color: #ffffff; /* White background for odd rows */
+}
+
+tr:hover {
+    background-color: #b2ebf2; /* Highlight row on hover */
+}
+
+/* Additional styling for headings */
+h1 {
+    color: #4CAF50; /* Green color for main heading */
+}
+
+h2 {
+    color: #333; /* Dark color for subheadings */
+}

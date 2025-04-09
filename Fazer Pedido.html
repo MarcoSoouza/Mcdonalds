@@ -1,0 +1,137 @@
+<link rel="stylesheet" href="Fazer pedido.css">
+<link rel="stylesheet" href="database_schema.sql">
+<link rel="stylesheet" href="resultados.html">
+
+<section id="order" style="text-align: center;">
+    <h2>Fazer Pedido</h2>
+    <form id="orderForm" style="display: flex; flex-direction: column; align-items: center;">
+        <label for="flavor">Escolha seu sabor:</label>
+        <select id="flavor" name="flavor" required>
+        </select>
+        <script>
+            // Simulated data from sabores_sorveteria table
+            const flavors = [
+                { value: 'chocolate', text: 'Chocolate' },
+                { value: 'morango', text: 'Morango' },
+                { value: 'mirtilo', text: 'Mirtilo' },
+                { value: 'pistache', text: 'Pistache' }
+            ];
+
+            // Populate the flavor dropdown
+            const flavorSelect = document.getElementById('flavor');
+            flavors.forEach(flavor => {
+                const option = document.createElement('option');
+                option.value = flavor.value;
+                option.textContent = flavor.text;
+                flavorSelect.appendChild(option);
+            });
+        </script>
+        
+        <label for="quantity">Quantidade:</label>
+        <input type="number" id="quantity" name="quantity" min="1" required>
+        
+        <label for="customerName">Nome do Cliente:</label>
+        <input type="text" id="customerName" name="customerName" required>
+
+        <label for="deliveryTime">Prazo de Entrega:</label>
+        <input type="text" id="deliveryTime" name="deliveryTime" value="30 minutos" readonly>
+
+        <label for="motoboyName">Nome do Motoboy:</label>
+        <input type="text" id="motoboyName" name="motoboyName" required>
+        
+        <button type="submit">Fazer Pedido</button>
+    </form>
+    <div id="loadingMessage" style="display:none;">Aguarde, seu pedido está sendo processado...</div>
+    <div id="orderCard" class="order-section" style="display:none; margin-top: 20px;">
+        <h3>Seu Pedido</h3>
+        <p id="orderDetails"></p>
+        <p id="orderPrice"></p>
+        <img id="iceCreamImage" src="" alt="Sorvete" style="width: 200px; display: none; margin-top: 10px;">
+    </div>
+</section>
+
+<script>
+    const prices = {
+        chocolate: 5.00,
+        morango: 5.50,
+        mirtilo: 5.00,
+        pistache: 5.50
+    };
+
+    function generateRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const flavor = document.getElementById('flavor').value;
+        const quantity = document.getElementById('quantity').value;
+        const customerName = document.getElementById('customerName').value;
+        const motoboyName = document.getElementById('motoboyName').value;
+
+        // Show loading message
+        document.getElementById('loadingMessage').style.display = 'block';
+
+        // Send order data to the server
+        fetch('/submit_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ flavor, quantity, customerName, motoboyName })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            // Hide loading message
+            document.getElementById('loadingMessage').style.display = 'none';
+            alert(data); // Show success message
+
+            // Generate a random password between 1 and 1000
+            const password = generateRandomNumber(1, 1000); // Generate a random number
+            alert(`Your order password is: ${password}`); // Display the password
+
+            // Send positive message to email
+            fetch('/send_email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: 'marcoosouzasilva182@gmail.com',
+                    message: `New order placed: ${flavor}, Quantity: ${quantity}, Motoboy: ${motoboyName}, Password: ${password}`
+                })
+            });
+
+            // Reset the form or update the UI as needed
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+            // Hide loading message in case of error
+            document.getElementById('loadingMessage').style.display = 'none';
+        });
+
+        const orderDetails = `Sabor: ${flavor}, Quantidade: ${quantity}, Motoboy: ${motoboyName}`;
+        const orderPrice = `Preço Total: R$ ${(prices[flavor] * quantity).toFixed(2)}`;
+        
+        document.getElementById('orderDetails').innerText = orderDetails;
+        document.getElementById('orderPrice').innerText = orderPrice;
+
+        // Set the image based on the selected flavor
+        const imageMap = {
+            chocolate: 'image/Cópia de Sabor-chocolate-modelo01.png',
+            morango: 'image/Cópia de Sabor-morango-modelo01.png',
+            mirtilo: 'image/Cópia de Sabor-mirtilo-modelo01.jpg',
+            pistache: 'image/Cópia de Sabor-pistache-modelo01.png'
+        };
+        document.getElementById('iceCreamImage').src = imageMap[flavor];
+        document.getElementById('iceCreamImage').style.display = 'block';
+        document.getElementById('orderCard').style.display = 'block';
+    });
+</script>
+</section>
